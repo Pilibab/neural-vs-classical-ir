@@ -1,0 +1,33 @@
+/* 1. Global Reset - Add this to the top of index.css */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.App {
+    height: 100dvh; /* Use dynamic vh for mobile browsers */
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 20px; /* This is your outer "safe area" */
+    gap: 10px;    /* Adds space between your two panels without breaking height */
+}
+
+.Container {
+    width: 100%;
+    max-width: 480px;
+    /* Use 100% height so it fills the padded .App area exactly */
+    height: 100%; 
+    
+    border: 1px solid gray;
+    padding: 10px;
+    /* background-color: #1a1a1a; Optional: makes it visible against dark root */
+    border-radius: 8px;       /* Optional: makes it look more like a phone */
+    
+    /* Ensure internal content doesn't spill out */
+    overflow-y: auto; 
+    position: relative;
+}

@@ -1,0 +1,11 @@
+.Container {
+    width: 100%;
+    max-width: 480px;
+    height: calc(100vh - 20px);
+    border: 1px solid gray;
+    margin: 5px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
