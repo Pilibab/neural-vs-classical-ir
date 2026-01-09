@@ -12,7 +12,7 @@ def validate_manhwa_data(batch_data, expected_schema):
     Validates that each item in the batch matches the expected schema.
     
     Args:
-        batch_data: List of tuples from get_manhwa_list
+        batch_data: List of dicts from get_manhwa_list
         expected_schema: Dictionary with field names as keys and expected types as values
     
     Returns:
@@ -38,7 +38,7 @@ def validate_manhwa_data(batch_data, expected_schema):
         "errors": []
     }
     
-    # Expected field names in order
+    # Expected field names
     field_names = [
         "rank",
         "title", 
@@ -58,24 +58,26 @@ def validate_manhwa_data(batch_data, expected_schema):
             "field_errors": []
         }
         
-        # Check if item is a tuple
-        if not isinstance(item, tuple):
+        # Check if item is a dict
+        if not isinstance(item, dict):
             item_result["valid"] = False
-            item_result["error"] = f"Item is not a tuple, got {type(item).__name__}"
+            item_result["error"] = f"Item is not a dict, got {type(item).__name__}"
             results["valid"] = False
             results["errors"].append(item_result)
             continue
         
-        # Check if tuple has correct number of fields
-        if len(item) != len(field_names):
+        # Check if dict has all required fields
+        missing_fields = [field for field in field_names if field not in item]
+        if missing_fields:
             item_result["valid"] = False
-            item_result["error"] = f"Expected {len(field_names)} fields, got {len(item)}"
+            item_result["error"] = f"Missing fields: {missing_fields}"
             results["valid"] = False
             results["errors"].append(item_result)
             continue
         
         # Validate each field
-        for field_idx, (field_name, field_value) in enumerate(zip(field_names, item)):
+        for field_name in field_names:
+            field_value = item[field_name]
             expected_types = expected_schema[field_name]
             
             # Check if value matches any of the expected types
@@ -151,22 +153,22 @@ def test_manhwa_scraper():
             print(f"   Invalid items: {len(validation_result['errors'])}")
         
         # Always print types for debugging
-        rank, title, synopsis, cover_image_url, rating, chapters, published_date, tags, link = batch[0]
+        item = batch[0]
         
         def truncate(value, length=10):
             s = str(value)
             return s[:length] + "..." if len(s) > length else s
         
         print(f"""
-                rank: {type(rank).__name__}, sample: {truncate(rank)}
-                title: {type(title).__name__}, sample: {truncate(title)}
-                synopsis: {type(synopsis).__name__}, sample: {truncate(synopsis)}
-                cover_image_url: {type(cover_image_url).__name__}, sample: {truncate(cover_image_url)}
-                rating: {type(rating).__name__}, sample: {truncate(rating)}
-                chapters: {type(chapters).__name__}, sample: {truncate(chapters)}
-                published_date: {type(published_date).__name__}, sample: {truncate(published_date)}
-                tags: {type(tags).__name__}, sample: {tags}
-                link: {type(link).__name__}, sample: {truncate(link)}
+                rank: {type(item['rank']).__name__}, sample: {truncate(item['rank'])}
+                title: {type(item['title']).__name__}, sample: {truncate(item['title'])}
+                synopsis: {type(item['synopsis']).__name__}, sample: {truncate(item['synopsis'])}
+                cover_image_url: {type(item['cover_image_url']).__name__}, sample: {truncate(item['cover_image_url'])}
+                rating: {type(item['rating']).__name__}, sample: {truncate(item['rating'])}
+                chapters: {type(item['chapters']).__name__}, sample: {truncate(item['chapters'])}
+                published_date: {type(item['published_date']).__name__}, sample: {truncate(item['published_date'])}
+                tags: {type(item['tags']).__name__}, sample: {item['tags']}
+                link: {type(item['link']).__name__}, sample: {truncate(item['link'])}
         """)
         
 

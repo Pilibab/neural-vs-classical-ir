@@ -55,7 +55,18 @@ def get_manhwa_list(route: str = "/topmanga.php?type=manhwa&", result_lazy_limit
             details = scrape_detail(detail_tag)
 
             if details:
-                result.append((rank, *details))
+                title, synopsis_text, img_link, score, chapters, pub_date, tags, link = details
+                result.append({
+                    "rank": rank,
+                    "title": title,
+                    "synopsis": synopsis_text,
+                    "cover_image_url": img_link,
+                    "rating": score,
+                    "chapters": chapters,
+                    "published_date": pub_date,
+                    "tags": tags,
+                    "link": link
+                })
 
             if test_phase:
                 test_itr += 1
