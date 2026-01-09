@@ -6,7 +6,7 @@ def normalize_manhwa_data(
     rating: float | str,
     chapters: str | int,
     published_date: str,
-    tags: str,
+    tags: str | list,
     link: str,
 ):
     # Validate rank
@@ -27,6 +27,15 @@ def normalize_manhwa_data(
     except (ValueError, TypeError):
         final_chapters = "unknown"
     
+    # Validate tags
+    try:
+        if isinstance(tags, list):
+            final_tags = tags
+        else:
+            final_tags = [tag.strip() for tag in str(tags).split(",") if tag.strip()]
+    except (ValueError, TypeError, AttributeError):
+        final_tags = [] 
+
     # Validate other strings
     def validate_str(val, default="N/A"):
         return str(val) if val is not None else default
@@ -39,6 +48,6 @@ def normalize_manhwa_data(
         "rating": final_rating,
         "chapters": final_chapters,
         "published_date": validate_str(published_date, ""),
-        "tags": validate_str(tags, ""),
+        "tags": final_tags,
         "link": validate_str(link, ""),
     }
