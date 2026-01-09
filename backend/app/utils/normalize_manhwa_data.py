@@ -1,3 +1,5 @@
+from hash_text import hash_text
+
 def normalize_manhwa_data(
     source: str,
     source_id: str | int,
@@ -48,12 +50,16 @@ def normalize_manhwa_data(
     def validate_str(val, default="N/A"):
         return str(val) if val is not None else default
 
+    # hashed for checking if synopsis changed 
+    hashed_synopsis = hash_text(synopsis)
+
     return {
         "source":source,
         "source_id": final_source_id,
         "rank": final_rank,
         "title": validate_str(title, ""),
         "synopsis": validate_str(synopsis, ""),
+        "hashed_synopsis": hashed_synopsis,
         "cover_image_url": validate_str(cover_image_url, ""),
         "rating": final_rating,
         "chapters": final_chapters,

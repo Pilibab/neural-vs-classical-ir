@@ -8,6 +8,7 @@ class Manhwa(BaseModel):
     rank: int | str
     title: str
     synopsis: str
+    hashed_synopsis: str
     cover_image_url: str
     rating: float | str
     chapters: int | str
