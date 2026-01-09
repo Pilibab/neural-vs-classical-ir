@@ -1,4 +1,4 @@
-def manhwa_schema_data(
+def normalize_manhwa_data(
     rank: int | str,
     title: str,
     synopsis: str,
