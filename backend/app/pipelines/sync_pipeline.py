@@ -23,8 +23,6 @@ def sync(raw_manhwa: dict):
 
         # persistence 
         SyncService.upsert(manhwa)
-
-        # update vector
         
 
     except Exception as e:

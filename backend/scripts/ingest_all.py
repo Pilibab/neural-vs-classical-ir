@@ -13,7 +13,7 @@ def run_ingest():
         processed_data = ingest(raw_manhwa)
 
         if processed_data:  # only embed if ingest succeeded
-            embed_pipeline(processed_data.synopsis)
+            embed_pipeline(processed_data)
         
 if __name__ == "__main__": 
     run_ingest()

@@ -1,8 +1,8 @@
+from models.manhwa import Manhwa
+
 def normalize_manhwa_vector(
-    source: str,
-    source_id: str | int,
-    title: str,
-    vector: list,
+    manhwa: Manhwa, 
+    synopsis_vector: list
 ):
     """
     Normalizes manhwa vector data with type validation and fallback defaults.
@@ -16,6 +16,12 @@ def normalize_manhwa_vector(
     Returns:
         Dictionary with normalized vector data
     """
+
+    source = manhwa.source
+    source_id = manhwa.source_id
+    title = manhwa.title
+    vector = synopsis_vector
+
     # Validate source
     try:
         final_source = str(source) if source else "unknown"
