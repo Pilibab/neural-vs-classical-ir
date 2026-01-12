@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import time
+import re
 # from datetime import datetime
 # import os
 
@@ -70,6 +71,9 @@ def get_manhwa_list(route: str = "/topmanga.php?type=manhwa&", result_lazy_limit
                     "link": link
                 })
 
+            print(f"{test_itr}: {title}")
+
+
             if test_phase:
                 test_itr += 1
 
@@ -101,15 +105,11 @@ def scrape_detail(url: str):
     response.raise_for_status()
 
     
-    import re
-
+    print(url)
     # Search for digits following "/manga/"
-    match = re.search(r'/manga/(\+d)', url)
-
-    if match:
-        manga_id = match.group(1)
-    else:
-        manga_id = None
+    
+    match = re.search(r'/manga/(\d+)/', url)
+    manga_id = match.group(1) if match else None
 
 
     soup = BeautifulSoup(response.text, "html.parser")
@@ -171,7 +171,7 @@ def scrape_detail(url: str):
     # ! RATING
     # ! =============================================================
     # <div class="score-label score-9">9.03</div>
-    score_tag = right_div.select_one("div.score-label.score-9")
+    score_tag = right_div.select_one("div.score-label")
     score = score_tag.get_text(strip=True)
 
     return manga_id, title, synopsis_text, img_link, score, chapters, pub_date, tags,link

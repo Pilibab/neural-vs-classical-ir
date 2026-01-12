@@ -1,4 +1,4 @@
-from hash_text import hash_text
+from .hash_text import hash_text
 
 def normalize_manhwa_data(
     source: str,
