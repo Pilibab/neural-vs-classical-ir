@@ -7,20 +7,8 @@ from ..models.manhwa import Manhwa
 from ..services.manhwa_service import ManhwaService
 
 def ingest(raw_manhwa: dict):
-    print("ManhwaService:", ManhwaService)
-    print("Type:", type(ManhwaService))
-    print("Callable:", callable(ManhwaService))
-
-    print("ManhwaService:", Manhwa)
-    print("Type:", type(Manhwa))
-    print("Callable:", callable(Manhwa))
-
-    print("ManhwaService:", normalize_manhwa_data)
-    print("Type:", type(normalize_manhwa_data))
-    print("Callable:", callable(normalize_manhwa_data))
 
     try:
-        print("normalizing")
         normalized = normalize_manhwa_data(
             source=raw_manhwa.get("source"),
             source_id=raw_manhwa.get("source_id"),
@@ -35,16 +23,12 @@ def ingest(raw_manhwa: dict):
             link=raw_manhwa.get("link"),
         )
         # schema enforcement
-        print("enforcing") 
         manhwa = Manhwa(**normalized)
 
         # persistence 
-        print("upserting")
-
         service = ManhwaService()
         service.upsert(manhwa)
 
-        print("upserted")
 
         return manhwa
 

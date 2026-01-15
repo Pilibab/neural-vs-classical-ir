@@ -15,3 +15,4 @@ print(client.list_database_names())
 
 manhwa_vector_collection = db.manhwa_vectors
 manhwa_data_collection = db.manhwa_data
+error_log = db.error_log_collection

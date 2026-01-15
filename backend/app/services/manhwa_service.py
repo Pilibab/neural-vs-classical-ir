@@ -29,8 +29,8 @@ class ManhwaService:
         existing = self.get_by_source(manhwa.source, manhwa.source_id)
         
         if existing:
-            print(f"Updating existing manhwa: {manhwa.title}")
+            print(f"\tUpdating existing manhwa: {manhwa.title}")
             return self.update(existing["_id"], manhwa)
         else:
-            print(f"Inserting new manhwa: {manhwa.title}")
+            print(f"\tInserting new manhwa: {manhwa.title}")
             return self.insert(manhwa)

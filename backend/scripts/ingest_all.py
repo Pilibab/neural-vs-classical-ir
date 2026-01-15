@@ -10,13 +10,13 @@ from app.pipelines.embed_pipeline import embed_pipeline
 def run_ingest():
     # get_manhwa_list -> [{},{},..{}] where {} are manhwa data so each {} are individual manhwa
 
-    for raw_batch in get_manhwa_list(test_phase=True):
+    for raw_batch in get_manhwa_list():
 
         for raw_manhwa in raw_batch: 
             processed_data = ingest(raw_manhwa)
 
-            # if processed_data:  # only embed if ingest succeeded
-                # embed_pipeline(processed_data)
+            if processed_data:  # only embed if ingest succeeded
+                embed_pipeline(processed_data)
         
 if __name__ == "__main__": 
     run_ingest()

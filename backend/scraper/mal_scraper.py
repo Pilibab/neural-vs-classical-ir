@@ -2,8 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 import time
 import re
-# from datetime import datetime
-# import os
+
+from app.services.error_log_service import ErrorLogService
+
 
 
 BASE_URL = "https://myanimelist.net"
@@ -38,61 +39,69 @@ def get_manhwa_list(route: str = "/topmanga.php?type=manhwa&", result_lazy_limit
             break
 
 
-        # 50 entries i think 
+        # 50 entries i think
+        batch_idx = 1
         for entry in entries:
+            try:
 
-            if test_itr >= test_limit and test_phase:
-                break 
-
-
-            # ranking differs in the entry table and detail tag
-            rank_tag= entry.select_one("td.rank")
-            rank = rank_tag.get_text(strip=True)
-
-            # from <h3><a>{title}<a><h3>
-            # we are getting the link from a which redirects to page with manhwa details 
-            detail_tag = entry.select_one("h3.manga_h3 a").get('href')
-
-            details = scrape_detail(detail_tag)
-
-            if details:
-                manga_id, title, synopsis_text, img_link, score, chapters, pub_date, tags, link = details
-                result.append({
-                    "source": source,
-                    "source_id" : manga_id,
-                    "rank": rank,
-                    "title": title,
-                    "synopsis": synopsis_text,
-                    "cover_image_url": img_link,
-                    "rating": score,
-                    "chapters": chapters,
-                    "published_date": pub_date,
-                    "tags": tags,
-                    "link": link
-                })
-
-            print(f"{test_itr}: {title}")
+                if test_itr >= test_limit and test_phase:
+                    return
 
 
-            if test_phase:
-                test_itr += 1
+                # Todo put this inside try?
+                # ranking differs in the entry table and detail tag
+                rank_tag= entry.select_one("td.rank")
+                rank = rank_tag.get_text(strip=True)
 
-            # Longer delay to be respectful to the server
-            time.sleep(2)
+                # from <h3><a>{title}<a><h3>
+                # we are getting the link from a which redirects to page with manhwa details 
+                detail_tag = entry.select_one("h3.manga_h3 a").get('href')
 
-            if len(result) >= result_lazy_limit:
-                # * tensai ka na (天才かな)?
-                yield result;
+                details = scrape_detail(detail_tag)
 
-                # does this clear it?
-                result = []
 
-                # Add this check after the for loop
-        if test_itr >= test_limit and test_phase:
-            if result:  # Yield any remaining results
-                yield result
-            break
 
+                if details:
+                    manga_id, title, synopsis_text, img_link, score, chapters, pub_date, tags, link = details
+                    result.append({
+                        "source": source,
+                        "source_id" : manga_id,
+                        "rank": rank,
+                        "title": title,
+                        "synopsis": synopsis_text,
+                        "cover_image_url": img_link,
+                        "rating": score,
+                        "chapters": chapters,
+                        "published_date": pub_date,
+                        "tags": tags,
+                        "link": link
+                    })
+
+                print(f"{batch_idx}: {title}")
+                batch_idx += 1
+
+                if test_phase:
+                    test_itr += 1
+
+                # Longer delay to be respectful to the server
+                time.sleep(2)
+
+                if len(result) >= result_lazy_limit:
+                    # * tensai ka na (天才かな)?
+                    yield result;
+
+                    # does this clear it?
+                    result = []
+
+            except Exception as e: 
+                ErrorLogService.log_error(
+                    source=source,
+                    page=page,
+                    url=detail_tag,
+                    exc=e,
+                )
+
+                return 
         page+=50
 
 
@@ -165,7 +174,7 @@ def scrape_detail(url: str):
     # ! SYNOPSIS
     # ! =============================================================
     synopsis_tag = right_div.select_one('span[itemprop="description"]')
-    synopsis_text = synopsis_tag.get_text(separator="\n", strip=True)
+    synopsis_text = extract_synopsis(synopsis_tag)
 
     # ! =============================================================
     # ! RATING
@@ -176,6 +185,18 @@ def scrape_detail(url: str):
 
     return manga_id, title, synopsis_text, img_link, score, chapters, pub_date, tags,link
 
+def extract_synopsis(synopsis_tag):
+# Extract the text with formatting preserved
+    synopsis = synopsis_tag.get_text(separator="\n", strip=True)
+    
+    # 1. Remove the specific MAL signature
+    target_str = "[Written by MAL Rewrite]"
+    synopsis = synopsis.replace(target_str, "")
+    
+    # 2. Clean up trailing whitespace/newlines left behind after removal
+    synopsis = synopsis.strip()
+    
+    return synopsis
 
 # Assuming 'left_div' is the <div class="leftside"> from your HTML
 def extract_sidebar_info(left_div):
