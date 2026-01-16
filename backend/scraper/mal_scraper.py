@@ -19,7 +19,7 @@ def get_manhwa_list(route: str = "/topmanga.php?type=manhwa&", result_lazy_limit
 
     result = []
     total_manhwa = 0
-    page = 0
+    page = 150
 
     while True:
 
@@ -38,6 +38,9 @@ def get_manhwa_list(route: str = "/topmanga.php?type=manhwa&", result_lazy_limit
             print(f"\ No more entries found. scrapped total of: {total_manhwa}")
             break
 
+        print("=" * 30)
+        print(" " * 10 + f"CURR PAGE: {page}")
+        print("=" * 30)
 
         # 50 entries i think
         batch_idx = 1
@@ -186,7 +189,11 @@ def scrape_detail(url: str):
     return manga_id, title, synopsis_text, img_link, score, chapters, pub_date, tags,link
 
 def extract_synopsis(synopsis_tag):
-# Extract the text with formatting preserved
+
+    if not synopsis_tag or not synopsis_tag.get_text(strip=True):
+        return None
+    
+    # Extract the text with formatting preserved
     synopsis = synopsis_tag.get_text(separator="\n", strip=True)
     
     # 1. Remove the specific MAL signature
@@ -196,7 +203,7 @@ def extract_synopsis(synopsis_tag):
     # 2. Clean up trailing whitespace/newlines left behind after removal
     synopsis = synopsis.strip()
     
-    return synopsis
+    return synopsis if synopsis else None
 
 # Assuming 'left_div' is the <div class="leftside"> from your HTML
 def extract_sidebar_info(left_div):

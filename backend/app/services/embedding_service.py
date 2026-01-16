@@ -30,8 +30,8 @@ class EmbeddingService:
         existing = self.get_by_source(manhwa_embedded.source, manhwa_embedded.source_id)
         
         if existing:
-            print(f"Updating existing manhwa_embedded: {manhwa_embedded.title}")
+            print(f"\tUpdating existing manhwa_embedded: {manhwa_embedded.title}")
             return self.update(existing["_id"], manhwa_embedded)
         else:
-            print(f"Inserting new manhwa_embedded: {manhwa_embedded.title}")
+            print(f"\tInserting new manhwa_embedded: {manhwa_embedded.title}")
             return self.insert(manhwa_embedded)

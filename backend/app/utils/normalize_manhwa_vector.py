@@ -1,59 +1,58 @@
+from pydantic import BaseModel, Field, field_validator
+from typing import Literal, List, Union
 from models.manhwa import Manhwa
+
+class Vector(BaseModel):
+    source: str = "unknown"
+    source_id: Union[str, int]
+    title: str = ""
+    vector: List[float] = Field(default_factory=list)
+    
+    # Quality indicators
+    embedding_source: Literal["synopsis", "title+tags", "title"]
+    embedding_text: str
+
+    @field_validator("source", mode="before")
+    @classmethod
+    def validate_source(cls, v):
+        return str(v) if v else "unknown"
+
+    @field_validator("source_id", mode="before")
+    @classmethod
+    def validate_source_id(cls, v):
+        try:
+            return int(v)
+        except (ValueError, TypeError):
+            return v
+
+    @field_validator("vector", mode="before")
+    @classmethod
+    def validate_vector(cls, v):
+        if not isinstance(v, list):
+            return []
+        try:
+            return [float(x) for x in v]
+        except (ValueError, TypeError):
+            return []
 
 def normalize_manhwa_vector(
     manhwa: Manhwa, 
-    synopsis_vector: list
-):
+    synopsis_vector: list, 
+    embedding_source: str, 
+    text: str
+) -> dict:
     """
-    Normalizes manhwa vector data with type validation and fallback defaults.
-    
-    Args:
-        source: The source of the manhwa (e.g., 'myanimelist')
-        source_id: The ID from the source
-        title: The title of the manhwa
-        vector: The embedding vector
-    
-    Returns:
-        Dictionary with normalized vector data
+    Normalizes manhwa vector data using the Pydantic Vector model.
     """
-
-    source = manhwa.source
-    source_id = manhwa.source_id
-    title = manhwa.title
-    vector = synopsis_vector
-
-    # Validate source
-    try:
-        final_source = str(source) if source else "unknown"
-    except (ValueError, TypeError):
-        final_source = "unknown"
+    # Instantiate the model (Pydantic performs validation automatically)
+    vector_data = Vector(
+        source=manhwa.source,
+        source_id=manhwa.source_id,
+        title=manhwa.title,
+        vector=synopsis_vector,
+        embedding_source=embedding_source,
+        embedding_text=text
+    )
     
-    # Validate source_id
-    try:
-        final_source_id = int(source_id)
-    except (ValueError, TypeError):
-        final_source_id = source_id
-    
-    # Validate title
-    try:
-        final_title = str(title) if title else ""
-    except (ValueError, TypeError):
-        final_title = ""
-    
-    # Validate vector
-    try:
-        if isinstance(vector, list):
-            # Ensure all elements are numeric
-            final_vector = [float(v) for v in vector]
-        else:
-            final_vector = []
-    except (ValueError, TypeError):
-        final_vector = []
-    
-    return {
-        "source": final_source,
-        "source_id": final_source_id,
-        "title": final_title,
-        "vector": final_vector,
-    } 
-    
+    # Return as dict for your database/downstream task
+    return vector_data.model_dump()

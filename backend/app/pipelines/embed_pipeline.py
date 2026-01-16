@@ -6,24 +6,32 @@ from sentence_transformers import SentenceTransformer
 from services.embedding_service import EmbeddingService
 from utils.normalize_manhwa_vector import normalize_manhwa_vector
 
-from numpy import shape
 
 model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 def embed_pipeline(manhwa: Manhwa) -> list:
 
-    synospsis_vector = model.encode(manhwa.synopsis)
-    synospsis_vector = synospsis_vector.tolist()
-    try:
-        normalized = normalize_manhwa_vector(manhwa, synospsis_vector)
+    text, source = build_embedding_payload(manhwa)
 
-        manhwa = Vector(**normalized)
+    embedding = model.encode(text).tolist()
+    
 
-        service = EmbeddingService()
-        service.upsert(manhwa)
+    normalized = normalize_manhwa_vector(manhwa, embedding, source, text)
 
-        
-    except Exception as e:
-        print(e)
+    _manhwa = Vector(**normalized)
 
+    service = EmbeddingService()
+    service.upsert(_manhwa)
+
+
+
+
+def build_embedding_payload(manhwa: Manhwa) -> tuple[str | None, str | None]:
+    if manhwa.synopsis:
+        return manhwa.synopsis, "synopsis"
+
+    if manhwa.tags:
+        return f"{manhwa.title}. Genres: {manhwa.tags}", "title+tags"
+
+    return manhwa.title, "title"
