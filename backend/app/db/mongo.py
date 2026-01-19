@@ -1,18 +1,16 @@
-# mongo.py: creates MongoClient and db
 from pymongo import MongoClient
-from dotenv import load_dotenv
-import os
+from app.config import settings
 
-load_dotenv()
+# Initialize Client
+client = MongoClient(settings.mongo_uri)
 
-db_link = os.environ.get("MONGODB_LINK")
-client = MongoClient(f'{db_link}')
+# Access Database using setting
+db = client[settings.db_name]
 
-db = client.manhwa_db
+print(f"Connecting to: {settings.mongo_uri}")
+print(f"Database: {settings.db_name}")
 
-print(f"Connecting to: {db_link}")
-print(client.list_database_names())
-
-manhwa_vector_collection = db.manhwa_vectors
-manhwa_data_collection = db.manhwa_data
-error_log_collection = db.error_logs
+# Access Collections using settings
+manhwa_vector_collection = db[settings.vector_collection]
+manhwa_data_collection = db[settings.data_collection]
+error_log_collection = db[settings.error_log_collection]
