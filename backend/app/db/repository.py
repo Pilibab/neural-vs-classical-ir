@@ -22,3 +22,14 @@ class Repository:
             "source": source,
             "source_id": source_id
         })
+
+    def find_all_that(self, ranked_source_ids: list):
+        # Get the documents from Mongo
+        results = list(self.collection.find({"source_id": {"$in": ranked_source_ids}}))
+        
+        # Sort the results based on the index of the ID in your input list
+        # faster look up
+        order_map = {id: pos for pos, id in enumerate(ranked_source_ids)}
+        results.sort(key=lambda doc: order_map.get(doc["source_id"]))
+        
+        return results
