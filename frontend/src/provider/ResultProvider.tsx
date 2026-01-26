@@ -9,13 +9,13 @@ const ResultProvider = ({children} : ResultProviderProps) => {
 
     const clearResults = () => setResults([]);
 
-    <ResultContext.Provider 
+    return (<ResultContext.Provider 
         value={{
         results, setResults, clearResults
         }}
     >
         {children}
-    </ResultContext.Provider>
+    </ResultContext.Provider>)
 }
 
 export default ResultProvider;
