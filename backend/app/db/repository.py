@@ -1,5 +1,6 @@
 # db/base_repository.py
 from pymongo.collection import Collection
+from models.manhwa import Manhwa
 
 class Repository:
     def __init__(self, collection: Collection):
@@ -23,10 +24,11 @@ class Repository:
             "source_id": source_id
         })
 
-    def find_by_source_ids(self, source_ids: list[str]):
+    def find_by_source_ids(self, source_ids: list[str]) -> list[Manhwa]:
         """Pure data-access method"""
         return list(
             self.collection.find(
-                {"source_id": {"$in": source_ids}}
+                {"source_id": {"$in": source_ids}},
+                {"_id":0}
             )
         )

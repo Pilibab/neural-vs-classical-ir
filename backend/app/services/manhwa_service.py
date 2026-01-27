@@ -6,6 +6,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../'
 from db.mongo import manhwa_data_collection  # or however you get your DB connection
 from db.repository import Repository
 from models.manhwa import Manhwa
+from models.search_result import SearchResult
 
 class ManhwaService:
     def __init__(self):
@@ -35,13 +36,17 @@ class ManhwaService:
             print(f"\tInserting new manhwa: {manhwa.title}")
             return self.insert(manhwa)
         
-    def find_all_that(self, ranked_source_ids: Manhwa):
+    def find_all_that(self, ranked_source_ids: list[SearchResult]):
+        # extract id from ranked_sourc_id
+        ids_only = [res["source_id"] if isinstance(res, dict) else res.source_id 
+                for res in ranked_source_ids] 
+
         # Get the documents from Mongo
-        results = self.repository.find_by_source_ids(ranked_source_ids)
+        results = self.repository.find_by_source_ids(ids_only)
         
         # Sort the results based on the index of the ID in your input list
         # faster look up
-        order_map = {id: pos for pos, id in enumerate(ranked_source_ids)}
+        order_map = {id: pos for pos, id in enumerate(ids_only)}
         results.sort(key=lambda doc: order_map.get(doc["source_id"]))
         
         return results
