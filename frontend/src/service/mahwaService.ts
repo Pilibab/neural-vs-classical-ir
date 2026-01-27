@@ -1,4 +1,4 @@
-import { backend_port } from "../config";
+import { backend_port } from "../config.ts";
 
 export const getManhwaDetail = async (source: string, sourceId: string) => {
     const res = await fetch(`${backend_port}/api/manhwa/${source}/${sourceId}`);
@@ -11,5 +11,5 @@ export const getSimilarManhwa = async (synopsis: string) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ synopsis }) // Pass it as an object
     })
-    return res.json()
+    return await res.json()
 } 
