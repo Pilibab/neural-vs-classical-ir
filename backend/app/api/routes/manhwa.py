@@ -1,12 +1,11 @@
-from flask import request, jsonify
-
-
-
-from app.main import app
+from flask import Blueprint, jsonify
 from services.manhwa_service import ManhwaService
 
+# Create the Blueprint
+manhwa_bp = Blueprint('manhwa_bp', __name__)
 
-@app.route("/api/manhwa/<source>/<source_id>", methods=['GET'])
+
+@manhwa_bp.route("/api/manhwa/<source>/<source_id>", methods=['GET'])
 def get_manhwa_details(source: str,source_id: str):
     # Direct lookup in MongoDB by ID
     manhwa = ManhwaService.get_by_source(source, source_id)

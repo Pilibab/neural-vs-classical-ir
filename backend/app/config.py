@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     vector_collection: str = Field(default="manhwa_vectors", alias="MANHWA_VECTOR_COLLECTION")
     data_collection: str = Field(default="manhwa_data", alias="MANHWA_DATA_COLLECTION")
     error_log_collection: str = Field(default="error_logs", alias="ERROR_LOGS_COLLECTION")
+    frontend_url: str = Field(default="http://localhost:5173", alias="VITE_FRONTEND_URI")
 
     # Server
     port: int = Field(default=5000, alias="PORT")
