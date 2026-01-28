@@ -39,16 +39,17 @@ def search():
     embedded_synopsis = get_query_embedding(cleaned_text)
 
     # proceed with search service + clean up 
-    results = format_search_results(search_manhwa(embedded_synopsis))
+    search_result = format_search_results(search_manhwa(embedded_synopsis))
 
 
     service = ManhwaService()
 
     # find all manhwa that has the id 
-    results = service.find_all_that(results) 
+    results_manhwa = service.find_all_that(search_result) 
 
     return jsonify({
         "status": "success",
-        "count": len(results),
-        "data": results  # This is your array of Manhwas
+        "count": len(results_manhwa),
+        "ranking":search_result,
+        "data": results_manhwa  # This is your array of Manhwas
     }), 200
