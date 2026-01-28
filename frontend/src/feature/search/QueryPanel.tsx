@@ -15,7 +15,7 @@ const QueryPanel = () => {
         throw new Error("QueryPanel must be used within a ResultProvider");
     }
 
-    const { setResults } = context;
+    const { setResultsVectorSearch, setResultsManhwaData} = context;
 
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -26,16 +26,22 @@ const QueryPanel = () => {
         
         try {
             const response = await getSimilarManhwa(text);
-            const results = response.data
+            const result_manhwa = response.data             // entire manhwa data
+            const search_result = response.ranking          // the schema with final ranking (schema returned by search_manhwa.py)
             // Use response.data because that's where the list lives
             if (response.status === "success") {
-                setResults(response.data); 
+                setResultsVectorSearch(response.data); 
                 console.log("Manhwas found: ", response.data.length);
             } else {
                 console.error("Search failed:", response.error);
             }
 
-            setResults(results)
+            setResultsVectorSearch(result_manhwa)
+            setResultsManhwaData(result_manhwa)
+
+            console.log(result_manhwa[0]);
+            console.log(search_result[0]);
+            
 
         } catch (err) {
             console.error("Network error:", err);

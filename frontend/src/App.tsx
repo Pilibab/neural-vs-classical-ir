@@ -8,7 +8,6 @@ import CustomButton from "./ui/CustomButton/CustomButton"
 import ResultContext from "./context/ResultContext"
 
 function App() {
-  // const [results, setResults] = useState<ManhwaResult[]>([]);
 
   const context = useContext(ResultContext);
 
@@ -17,18 +16,18 @@ function App() {
       throw new Error("QueryPanel must be used within a ResultProvider");
   }
 
-  const { results } = context;
+  const { resultsVectorSearch} = context;
 
   useEffect(() => {
 
-  }, [results]);
+  }, [resultsVectorSearch]);
 
 
     const [currIdx, setCurrIdx] = useState(0)
 
     // helper ensures idx stays i bound 
     const canGoPrev = currIdx > 0;
-    const canGoNext = currIdx < results.length - 1;
+    const canGoNext = currIdx < resultsVectorSearch.length - 1;
 
     const handleNext = () => {
         if (canGoNext) setCurrIdx(prevIdx => prevIdx + 1);
@@ -45,7 +44,7 @@ function App() {
 
       </ContainerPanel>
       <ContainerPanel>
-        <ResultsPanel currIdx={currIdx} results={results}/>
+        <ResultsPanel currIdx={currIdx} resultsVectorSearch={resultsVectorSearch}/>
           {// TODO: MAKE IT SO THAT BUTTON IS NOT CLICKABLE FOR RESPECTIVE BOUND 
             }
           <div className="button-container">

@@ -1,4 +1,4 @@
-import type { ManhwaResult } from "../../feature/search/types";
+import type { ManhwaResult } from "../../domain/manhwa/Manhwa";
 
 export const mockResults: ManhwaResult[] = [
     {
