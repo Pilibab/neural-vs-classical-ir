@@ -14,13 +14,13 @@ const ManhwaCard = ({ idx }: ManhwaCardProps) => {
         throw new Error("ManhwaCard must be used within a ResultProvider");
     }
 
-    const { resultsManhwaData } = context;
+    const { resultsVectorSearch } = context;
 
-    // console.log(resultsManhwaData?.[idx]);
+    // console.log(resultsVectorSearch?.[idx]);
     
 
     // Optional: Add a safety check to avoid "cannot read property of undefined"
-    const item = resultsManhwaData?.[idx];
+    const item = resultsVectorSearch?.[idx];
 
     if (!item) {
         return (
@@ -29,7 +29,8 @@ const ManhwaCard = ({ idx }: ManhwaCardProps) => {
             </div>
         );
     }
-
+    console.log(item.cover_image_url);
+    
     return (
         <div className="manhwa-card">
             <div className="image-container">

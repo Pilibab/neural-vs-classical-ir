@@ -11,7 +11,8 @@ def format_search_results(results: list) -> list[SearchResult]:
             "source": res.get("source"),
             "source_id": res.get("source_id"),
             "embedding_source": res.get("embedding_source"),
-            "final_score": res.get("final_score")
+            "final_score": res.get("final_score"),
+            "cover_image_url": res.get("cover_image_url"), 
         }
         for res in results
     ]

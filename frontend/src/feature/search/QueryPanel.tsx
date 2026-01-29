@@ -1,7 +1,7 @@
 import CustomButton from "../../ui/CustomButton/CustomButton"
 import CustomTextArea from "../../ui/CustomTextArea/CustomTextArea"
 import "./QueryPanel.css"
-import { getSimilarManhwa } from "../../service/mahwaService"
+import { getSimilarManhwa } from "../../service/getSimilarManhwa"
 import { useContext, useState } from "react"
 import ResultContext from "../../context/ResultContext"
 
@@ -15,7 +15,7 @@ const QueryPanel = () => {
         throw new Error("QueryPanel must be used within a ResultProvider");
     }
 
-    const { setResultsVectorSearch, setResultsManhwaData} = context;
+    const { setResultsVectorSearch} = context;
 
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -26,23 +26,14 @@ const QueryPanel = () => {
         
         try {
             const response = await getSimilarManhwa(text);
-            const result_manhwa = response.data             // entire manhwa data
             const search_result = response.ranking          // the schema with final ranking (schema returned by search_manhwa.py)
             // Use response.data because that's where the list lives
             if (response.status === "success") {
-                setResultsVectorSearch(response.data); 
-                console.log("Manhwas found: ", response.data.length);
+                setResultsVectorSearch(search_result); 
+                console.log("Manhwas found: ", search_result.length);
             } else {
                 console.error("Search failed:", response.error);
             }
-
-            setResultsVectorSearch(search_result)
-            setResultsManhwaData(result_manhwa)
-
-            // console.log(result_manhwa[0]);
-            // console.log(search_result[0]);
-            
-
         } catch (err) {
             console.error("Network error:", err);
         }

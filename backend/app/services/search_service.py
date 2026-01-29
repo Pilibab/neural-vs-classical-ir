@@ -81,10 +81,11 @@ def search_manhwa(query_vector, source="MAL"):
             # by default all the data within a document is sent back 
             "$project": {
                 "_id": 0,
-                "title": 1,
+                "title": "$metadata.title",
                 "source": 1,
                 "source_id": 1,        # Added this
                 "embedding_source": 1,
+                "cover_image_url": "$metadata.cover_image_url", 
 
                 "actual_score": "$raw_vibe_score",
                 "final_score": "$final_score",

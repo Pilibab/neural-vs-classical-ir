@@ -44,12 +44,9 @@ def search():
 
     service = ManhwaService()
 
-    # find all manhwa that has the id 
-    results_manhwa = service.find_all_that(search_result) 
 
     return jsonify({
         "status": "success",
-        "count": len(results_manhwa),
+        "count": len(search_result),
         "ranking":search_result,
-        "data": results_manhwa  # This is your array of Manhwas
     }), 200

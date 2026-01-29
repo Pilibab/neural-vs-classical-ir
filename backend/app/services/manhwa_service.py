@@ -36,17 +36,3 @@ class ManhwaService:
             print(f"\tInserting new manhwa: {manhwa.title}")
             return self.insert(manhwa)
         
-    def find_all_that(self, ranked_source_ids: list[SearchResult]) -> list[Manhwa]:
-        # extract id from ranked_sourc_id
-        ids_only = [res["source_id"] if isinstance(res, dict) else res.source_id 
-                for res in ranked_source_ids] 
-
-        # Get the documents from Mongo
-        results = self.repository.find_by_source_ids(ids_only)
-        
-        # Sort the results based on the index of the ID in your input list
-        # faster look up
-        order_map = {id: pos for pos, id in enumerate(ids_only)}
-        results.sort(key=lambda doc: order_map.get(doc["source_id"]))
-        
-        return results
