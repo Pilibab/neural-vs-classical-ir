@@ -39,9 +39,11 @@ Semantic search engine that retrieves anime title based on synopsis similarity r
 - **Pydantic** – Strict data validation and settings management
 
 ---
-<pre>
-```text
+
+
 ##  Project Structure
+<pre>
+```
 backend/
 ├── app
 │   ├── api
@@ -98,6 +100,7 @@ backend/
 ├── .gitignore                               # Git ignore rules
 ├── README.md                                # Project documentation
 └── requirements.txt                         # Python dependencies
+
 frontend/
 ├── src
 │
