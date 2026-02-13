@@ -2,6 +2,8 @@
 
 Semantic search engine that retrieves anime title based on synopsis similarity rather than just key words. it turns plot synopsis into high-dmensional vectors to find the most similar across a database scraped from MyAnimeList 
 
+![query_screenshot](./docs/query-ir.png)
+![manhwa_info_screenshot](./docs/info-ir.png)
 ---
 
 ##  Features
